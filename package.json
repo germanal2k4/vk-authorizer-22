@@ -1,0 +1,7 @@
+{
+  "name": "vk-authorizer-22",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" },
+  "dependencies": {}
+}

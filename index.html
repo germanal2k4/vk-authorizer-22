@@ -1,61 +1,52 @@
 <!doctype html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <title>Corp Reposter — авторизация ВК</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>VK OAuth — корпоративные репосты</title>
   <style>
     body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;margin:0;background:#0b1220;color:#e6e8ec}
     .wrap{max-width:720px;margin:6rem auto;padding:0 1rem}
     .card{background:#131a2a;border:1px solid #2a3450;border-radius:16px;padding:24px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
-    h1{margin:0 0 8px;font-size:28px}
+    h1{margin:0 0 10px;font-size:26px}
     p{line-height:1.6;color:#b7bfd3}
     .row{display:flex;gap:12px;flex-wrap:wrap;margin-top:16px}
-    input,button{font:inherit}
-    input{width:100%;padding:12px 14px;border:1px solid #2a3450;border-radius:12px;background:#0f1626;color:#e6e8ec}
-    .btn{padding:12px 16px;border:0;border-radius:12px;cursor:pointer}
-    .primary{background:#4f7cff;color:#fff}
-    .ghost{background:transparent;border:1px solid #2a3450}
+    .btn{padding:12px 16px;border-radius:12px;border:1px solid #2a3450;background:#4f7cff;color:#fff;cursor:pointer;text-decoration:none;display:inline-block}
+    .btn.secondary{background:transparent;color:#9bb4ff}
+    code{background:#0f1626;border:1px solid #2a3450;border-radius:8px;padding:2px 6px}
     .note{font-size:13px;color:#8f97ad;margin-top:10px}
-    a{color:#9bb4ff;text-decoration:none}
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="card">
-      <h1>Корпоративные репосты ВК</h1>
-      <p>Это служебная страница. Нажмите «Авторизоваться», чтобы выдать приложению доступ на публикацию на вашей странице ВК.</p>
-
+      <h1>Авторизация ВК</h1>
+      <p>Нажмите «Авторизоваться», чтобы выдать приложению доступ <b>на публикацию на вашей странице</b> (scope <code>wall</code>). Доступ можно отозвать: ВК → Настройки → Безопасность → Приложения.</p>
       <div class="row">
-        <!-- ВСТАВЬ СВОЙ APP_ID и (опционально) redirect_uri на catch.html -->
-        <a id="authLink" class="btn primary" href="#">Авторизоваться через ВК</a>
-        <button class="btn ghost" onclick="copyLink()">Скопировать ссылку</button>
+        <a id="authLink" class="btn" href="#">Авторизоваться через VK</a>
+        <a class="btn secondary" href="#" id="copyLink">Скопировать ссылку</a>
       </div>
-      <p class="note">Доступ можно отозвать в любой момент: ВК → Настройки → Безопасность → Приложения.</p>
-
-      <div class="note" style="margin-top:18px">
-        Контакт техподдержки: <a href="mailto:support@example.com">support@example.com</a>
-      </div>
+      <p class="note">Используется Authorization Code Flow. Токен получаем на сервере и он не привязан к IP клиента.</p>
     </div>
   </div>
 
   <script>
-    // === НАСТРОЙ ===
-    const APP_ID = '54316032'; // <-- твой app_id
-    // если нет своего бэкенда, можно использовать blank.html;
-    // если есть catch.html на твоём домене, подставь его:
-    const REDIRECT = encodeURIComponent('https://api.vk.com/blank.html');
-    // const REDIRECT = encodeURIComponent('https://yourdomain.com/catch.html');
+    // === твои данные ===
+    const APP_ID = '54317306';
+    const REDIRECT = encodeURIComponent('https://vk-authorizer-22.vercel.app/vk/callback');
+    const SCOPE = encodeURIComponent('wall,offline'); // при желании добавишь offline: 'wall,offline'
 
-    const SCOPE = encodeURIComponent('wall'); // можно добавить offline позже
-    const VK_URL = `https://oauth.vk.com/authorize?client_id=${APP_ID}&redirect_uri=${REDIRECT}&display=page&scope=${SCOPE}&response_type=token&v=5.199`;
+    const VK_URL =
+      `https://oauth.vk.com/authorize?client_id=${APP_ID}` +
+      `&redirect_uri=${REDIRECT}` +
+      `&display=page&scope=${SCOPE}` +
+      `&response_type=code&v=5.199`;
 
     document.getElementById('authLink').href = VK_URL;
-
-    function copyLink(){
+    document.getElementById('copyLink').addEventListener('click', (e) => {
+      e.preventDefault();
       navigator.clipboard.writeText(VK_URL).then(()=>alert('Ссылка скопирована'));
-    }
+    });
   </script>
 </body>
 </html>
-
